@@ -7,48 +7,41 @@ import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown } from "lucide-r
 
 const menuItems = [
   {
-    name: "New Arrivals",
-    href: "/collections/new-arrivals",
-    submenu: [
-      { name: "Lawn Collection", href: "#" },
-      { name: "Summer Prints", href: "#" },
-      { name: "Embroidered Range", href: "#" },
-    ],
-  },
-  {
     name: "Women",
     href: "/collections/women",
     submenu: [
-      { name: "Unstitched", href: "#" },
-      { name: "Ready to Wear", href: "#" },
-      { name: "Luxury Pret", href: "#" },
-      { name: "Formals", href: "#" },
-      { name: "Basics", href: "#" },
+      { name: "Unstitched", href: "/collections/unstitched" },
+      { name: "Ready to Wear", href: "/collections/ready-to-wear" },
+      { name: "Luxury Pret", href: "/collections/luxury-pret" },
+      { name: "Formals", href: "/collections/formals" },
+    ],
+  },
+  {
+    name: "Luxury",
+    href: "/collections/luxury-pret",
+    submenu: [
+      { name: "Formal Wear", href: "/collections/formals" },
+      { name: "Party Wear", href: "/collections/party-wear" },
+      { name: "Festive Collection", href: "/collections/festive" },
     ],
   },
   {
     name: "Men",
     href: "/collections/men",
     submenu: [
-      { name: "Shalwar Kameez", href: "#" },
-      { name: "Kurta", href: "#" },
-      { name: "Waistcoat", href: "#" },
-    ],
-  },
-  {
-    name: "Luxury Pret",
-    href: "/collections/luxury-pret",
-    submenu: [
-      { name: "Formal Wear", href: "#" },
-      { name: "Party Wear", href: "#" },
-      { name: "Festive Collection", href: "#" },
+      { name: "Shalwar Kameez", href: "/collections/men-shalwar" },
+      { name: "Kurta", href: "/collections/men-kurta" },
+      { name: "Waistcoat", href: "/collections/men-waistcoat" },
     ],
   },
   { name: "Accessories", href: "/collections/accessories" },
-  { name: "Sale", href: "/collections/sale" },
 ]
 
-export default function Header() {
+interface HeaderProps {
+  transparent?: boolean
+}
+
+export default function Header({ transparent = false }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null)
@@ -62,34 +55,43 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const showTransparent = transparent && !isScrolled && !searchOpen
+
   return (
     <>
       {/* Announcement Bar */}
-      <div className="bg-primary text-primary-foreground text-center py-2 text-xs tracking-[0.2em] uppercase font-[family-name:var(--font-body)]">
-        Free Shipping on Orders Above PKR 5,000 | Use Code: FIDELS10
+      <div className={`${showTransparent ? "bg-primary/80 backdrop-blur-sm" : "bg-primary"} text-primary-foreground text-center py-2 text-[9px] sm:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-[family-name:var(--font-body)] transition-colors duration-300`}>
+        <div className="flex items-center justify-center gap-2 sm:gap-4 px-2">
+          <span className="hidden sm:inline">Unlock Free Shipping on Nationwide Paid Orders</span>
+          <span className="sm:hidden">Free Shipping Nationwide</span>
+          <Link href="/collections/new-arrivals" className="underline underline-offset-2 hover:no-underline whitespace-nowrap">
+            Shop Now
+          </Link>
+        </div>
       </div>
 
       <header
-        className={`sticky top-0 z-50 transition-all duration-500 ${
-          isScrolled
-            ? "bg-background/95 backdrop-blur-md shadow-sm"
-            : "bg-background"
+        className={`${transparent ? "fixed" : "sticky"} top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          showTransparent
+            ? "bg-transparent"
+            : "bg-background shadow-sm"
         }`}
+        style={{ marginTop: transparent ? "0" : "0" }}
       >
         {/* Main Header */}
-        <div className="flex items-center justify-between px-6 lg:px-12 py-4">
-          {/* Left: Hamburger (mobile) + Nav (desktop) */}
-          <div className="flex items-center gap-8">
+        <div className="flex items-center justify-between px-4 sm:px-6 lg:px-10 py-4">
+          {/* Left: Navigation */}
+          <div className="flex items-center gap-6">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden text-foreground"
+              className={`lg:hidden ${showTransparent ? "text-white" : "text-foreground"} transition-colors`}
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
-            <nav className="hidden lg:flex items-center gap-8">
-              {menuItems.slice(0, 3).map((item) => (
+            <nav className="hidden lg:flex items-center gap-6">
+              {menuItems.map((item) => (
                 <div
                   key={item.name}
                   className="relative group"
@@ -98,7 +100,11 @@ export default function Header() {
                 >
                   <Link
                     href={item.href}
-                    className="text-xs tracking-[0.15em] uppercase text-foreground hover:text-muted-foreground transition-colors duration-300 font-[family-name:var(--font-body)] font-medium"
+                    className={`text-[11px] tracking-[0.2em] uppercase transition-colors duration-300 font-[family-name:var(--font-body)] font-medium ${
+                      showTransparent
+                        ? "text-white hover:text-white/70"
+                        : "text-foreground hover:text-muted-foreground"
+                    }`}
                   >
                     {item.name}
                   </Link>
@@ -109,12 +115,12 @@ export default function Header() {
                       exit={{ opacity: 0, y: 8 }}
                       className="absolute top-full left-0 pt-4 min-w-[200px]"
                     >
-                      <div className="bg-card border border-border shadow-lg p-6">
+                      <div className="bg-card border border-border shadow-xl p-5">
                         {item.submenu.map((sub) => (
                           <Link
                             key={sub.name}
                             href={sub.href}
-                            className="block py-2 text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors font-[family-name:var(--font-body)]"
+                            className="block py-2.5 text-[11px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors font-[family-name:var(--font-body)]"
                           >
                             {sub.name}
                           </Link>
@@ -124,91 +130,54 @@ export default function Header() {
                   )}
                 </div>
               ))}
+              <Link
+                href="/collections/sale"
+                className={`text-[11px] tracking-[0.2em] uppercase transition-colors duration-300 font-[family-name:var(--font-body)] font-medium ${
+                  showTransparent
+                    ? "text-red-400 hover:text-red-300"
+                    : "text-destructive hover:text-destructive/80"
+                }`}
+              >
+                {"Summer'26 Sale"}
+              </Link>
             </nav>
           </div>
 
           {/* Center: Logo */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="text-3xl lg:text-4xl tracking-[0.3em] uppercase font-[family-name:var(--font-heading)] font-semibold text-foreground">
+            <h1 className={`text-2xl sm:text-3xl lg:text-4xl tracking-[0.25em] uppercase font-[family-name:var(--font-heading)] font-semibold transition-colors duration-300 ${
+              showTransparent ? "text-white" : "text-foreground"
+            }`}>
               FIDELS
             </h1>
           </Link>
 
-          {/* Right: Nav (desktop) + Icons */}
-          <div className="flex items-center gap-8">
-            <nav className="hidden lg:flex items-center gap-8">
-              {menuItems.slice(3).map((item) => (
-                <div
-                  key={item.name}
-                  className="relative group"
-                  onMouseEnter={() => setActiveSubmenu(item.name)}
-                  onMouseLeave={() => setActiveSubmenu(null)}
-                >
-                  <Link
-                    href={item.href}
-                    className={`text-xs tracking-[0.15em] uppercase text-foreground hover:text-muted-foreground transition-colors duration-300 font-[family-name:var(--font-body)] font-medium ${
-                      item.name === "Sale" ? "text-destructive" : ""
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                  {item.submenu && activeSubmenu === item.name && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      className="absolute top-full right-0 pt-4 min-w-[200px]"
-                    >
-                      <div className="bg-card border border-border shadow-lg p-6">
-                        {item.submenu.map((sub) => (
-                          <Link
-                            key={sub.name}
-                            href={sub.href}
-                            className="block py-2 text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors font-[family-name:var(--font-body)]"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              ))}
-            </nav>
-
-            <div className="flex items-center gap-5">
-              <button
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="text-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Search"
-              >
-                <Search className="w-[18px] h-[18px]" />
-              </button>
-              <Link
-                href="#"
-                className="hidden sm:block text-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Wishlist"
-              >
-                <Heart className="w-[18px] h-[18px]" />
-              </Link>
-              <Link
-                href="#"
-                className="hidden sm:block text-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Account"
-              >
-                <User className="w-[18px] h-[18px]" />
-              </Link>
-              <Link
-                href="#"
-                className="relative text-foreground hover:text-muted-foreground transition-colors"
-                aria-label="Cart"
-              >
-                <ShoppingBag className="w-[18px] h-[18px]" />
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-[family-name:var(--font-body)]">
-                  0
-                </span>
-              </Link>
-            </div>
+          {/* Right: Icons */}
+          <div className="flex items-center gap-4 sm:gap-5">
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className={`${showTransparent ? "text-white hover:text-white/70" : "text-foreground hover:text-muted-foreground"} transition-colors`}
+              aria-label="Search"
+            >
+              <Search className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+            </button>
+            <Link
+              href="/account"
+              className={`hidden sm:block ${showTransparent ? "text-white hover:text-white/70" : "text-foreground hover:text-muted-foreground"} transition-colors`}
+              aria-label="Account"
+            >
+              <User className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+            </Link>
+            <Link
+              href="/cart"
+              className={`relative ${showTransparent ? "text-white hover:text-white/70" : "text-foreground hover:text-muted-foreground"} transition-colors`}
+              aria-label="Cart"
+            >
+              <ShoppingBag className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+              <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-[family-name:var(--font-body)]">
+                0
+              </span>
+            </Link>
           </div>
         </div>
 
@@ -219,9 +188,9 @@ export default function Header() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="border-t border-border overflow-hidden"
+              className="border-t border-border overflow-hidden bg-background"
             >
-              <div className="px-6 lg:px-12 py-4">
+              <div className="px-4 sm:px-6 lg:px-10 py-4">
                 <div className="flex items-center gap-4 max-w-2xl mx-auto">
                   <Search className="w-4 h-4 text-muted-foreground" />
                   <input
@@ -260,16 +229,16 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed left-0 top-0 bottom-0 w-80 bg-background z-50 overflow-y-auto"
+              className="fixed left-0 top-0 bottom-0 w-[85%] max-w-sm bg-background z-50 overflow-y-auto"
             >
-              <div className="p-6">
+              <div className="p-5">
                 <div className="flex items-center justify-between mb-8">
                   <span className="text-xl tracking-[0.3em] uppercase font-[family-name:var(--font-heading)] font-semibold text-foreground">
                     FIDELS
                   </span>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-foreground"
+                    className="text-foreground p-1"
                     aria-label="Close menu"
                   >
                     <X className="w-5 h-5" />
@@ -282,9 +251,7 @@ export default function Header() {
                       <div className="flex items-center justify-between">
                         <Link
                           href={item.href}
-                          className={`py-3 text-sm tracking-[0.15em] uppercase font-[family-name:var(--font-body)] font-medium ${
-                            item.name === "Sale" ? "text-destructive" : "text-foreground"
-                          }`}
+                          className="py-3 text-sm tracking-[0.15em] uppercase font-[family-name:var(--font-body)] font-medium text-foreground"
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {item.name}
@@ -319,7 +286,7 @@ export default function Header() {
                               <Link
                                 key={sub.name}
                                 href={sub.href}
-                                className="block py-2 text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors font-[family-name:var(--font-body)]"
+                                className="block py-2.5 text-xs tracking-[0.1em] uppercase text-muted-foreground hover:text-foreground transition-colors font-[family-name:var(--font-body)]"
                                 onClick={() => setMobileMenuOpen(false)}
                               >
                                 {sub.name}
@@ -330,16 +297,39 @@ export default function Header() {
                       </AnimatePresence>
                     </div>
                   ))}
+                  <Link
+                    href="/collections/sale"
+                    className="py-3 text-sm tracking-[0.15em] uppercase font-[family-name:var(--font-body)] font-medium text-destructive"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {"Summer'26 Sale"}
+                  </Link>
                 </nav>
 
-                <div className="mt-8 pt-8 border-t border-border flex items-center gap-6">
-                  <Link href="#" className="flex items-center gap-2 text-sm text-foreground font-[family-name:var(--font-body)]" aria-label="Account">
+                <div className="mt-8 pt-8 border-t border-border">
+                  <Link 
+                    href="/account" 
+                    className="flex items-center gap-3 py-3 text-sm text-foreground font-[family-name:var(--font-body)]"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <User className="w-4 h-4" />
                     <span className="tracking-wider uppercase text-xs">Account</span>
                   </Link>
-                  <Link href="#" className="flex items-center gap-2 text-sm text-foreground font-[family-name:var(--font-body)]" aria-label="Wishlist">
+                  <Link 
+                    href="/wishlist" 
+                    className="flex items-center gap-3 py-3 text-sm text-foreground font-[family-name:var(--font-body)]"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     <Heart className="w-4 h-4" />
                     <span className="tracking-wider uppercase text-xs">Wishlist</span>
+                  </Link>
+                  <Link 
+                    href="/admin" 
+                    className="flex items-center gap-3 py-3 text-sm text-foreground font-[family-name:var(--font-body)]"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Menu className="w-4 h-4" />
+                    <span className="tracking-wider uppercase text-xs">Admin Panel</span>
                   </Link>
                 </div>
               </div>
