@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Heart, ShoppingBag, User, Menu, X, ChevronDown } from "lucide-react"
+import { Search, Heart, ShoppingBag, Menu, X, ChevronDown } from "lucide-react"
 
 const menuItems = [
   {
@@ -162,13 +162,6 @@ export default function Header({ transparent = false }: HeaderProps) {
               <Search className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
             </button>
             <Link
-              href="/account"
-              className={`hidden sm:block ${showTransparent ? "text-white hover:text-white/70" : "text-foreground hover:text-muted-foreground"} transition-colors`}
-              aria-label="Account"
-            >
-              <User className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
-            </Link>
-            <Link
               href="/cart"
               className={`relative ${showTransparent ? "text-white hover:text-white/70" : "text-foreground hover:text-muted-foreground"} transition-colors`}
               aria-label="Cart"
@@ -307,14 +300,6 @@ export default function Header({ transparent = false }: HeaderProps) {
                 </nav>
 
                 <div className="mt-8 pt-8 border-t border-border">
-                  <Link 
-                    href="/account" 
-                    className="flex items-center gap-3 py-3 text-sm text-foreground font-[family-name:var(--font-body)]"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <User className="w-4 h-4" />
-                    <span className="tracking-wider uppercase text-xs">Account</span>
-                  </Link>
                   <Link 
                     href="/wishlist" 
                     className="flex items-center gap-3 py-3 text-sm text-foreground font-[family-name:var(--font-body)]"

@@ -41,13 +41,13 @@ export default function HeroSlider() {
             src={slide.image}
             alt={slide.title}
             fill
-            className={`object-cover object-center transition-transform duration-[8000ms] ease-out ${
-              index === current ? "scale-110" : "scale-100"
+            className={`object-cover object-[center_15%] sm:object-[center_20%] transition-transform duration-[8000ms] ease-out ${
+              index === current ? "scale-105" : "scale-100"
             }`}
             priority={index <= 1}
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/5 to-black/50" />
         </div>
       ))}
 

@@ -22,6 +22,18 @@ const categoriesData = [
   "Accessories",
 ]
 
+// Pre-defined stock values to avoid hydration mismatch from Math.random()
+const stockValues: Record<string, number> = {
+  "1": 35,
+  "2": 72,
+  "3": 40,
+  "4": 50,
+  "5": 28,
+  "6": 65,
+  "7": 15,
+  "8": 88,
+}
+
 type Product = (typeof products)[0] & { stock?: number }
 
 export default function ProductsPage() {
@@ -30,7 +42,7 @@ export default function ProductsPage() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [productsList, setProductsList] = useState<Product[]>(
-    products.map((p) => ({ ...p, stock: Math.floor(Math.random() * 100) + 10 }))
+    products.map((p) => ({ ...p, stock: stockValues[p.id] || 50 }))
   )
 
   const filteredProducts = productsList.filter((product) => {
